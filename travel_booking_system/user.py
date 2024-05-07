@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter.messagebox import showinfo
 import pandas as pd
 
-from booking_management.book import Book
+from travel_booking_system.book import Book
 
 username_header = 'username'
 password_header = 'password'

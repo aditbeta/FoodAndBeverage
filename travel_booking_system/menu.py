@@ -1,9 +1,9 @@
 import tkinter as tk
 
-from booking_management.constant import bg_gray, bg_blue
-from booking_management.book import Book
-from booking_management.trip import Trip
-from booking_management.user import Login
+from travel_booking_system.constant import bg_gray, bg_blue
+from travel_booking_system.book import Book
+from travel_booking_system.trip import Trip
+from travel_booking_system.user import Login
 
 
 class Option(tk.Frame):

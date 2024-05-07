@@ -1,7 +1,7 @@
 import tkinter as tk
 
-from booking_management.book import Book
-from booking_management.menu import Option
+from travel_booking_system.book import Book
+from travel_booking_system.menu import Option
 
 
 class App(tk.Tk):
