@@ -1,5 +1,4 @@
-username,password
-admin,admin
-test,test
-user,user
-a,a
+id,email,phone,password
+1,admin,'0811',admin
+2,test,'0812',test
+3,user,'0813',user
