@@ -75,7 +75,7 @@ def configure_layout(self, is_register):
     # Place the label in the window
     email_label.grid(row=1, column=0, sticky='news')
     email_field.grid(row=1, column=1, columnspan=2, pady=20,
-                        sticky='news')
+                     sticky='news')
     password_label.grid(row=2, column=0, sticky='news')
     password_field.grid(row=2, column=1, columnspan=2, pady=20,
                         sticky='news')
