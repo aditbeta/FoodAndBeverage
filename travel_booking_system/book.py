@@ -72,6 +72,14 @@ class Book(tk.Frame):
     def create_result_layout(self, source, destination, date, refresh):
         if refresh:
             self.destroy()
+
+            source_location = location_df.query('name == @source')
+            if not source_location.empty:
+                source = source_location.iloc[0]['code']
+            destination_location = location_df.query('name == @destination')
+            if not destination_location.empty:
+                destination = destination_location.iloc[0]['code']
+
             return Book(self.master, source, destination, date)
 
         routes = route_df.query(
