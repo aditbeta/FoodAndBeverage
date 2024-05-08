@@ -16,9 +16,6 @@ schedule_df = pd.read_csv('data/schedule.csv')
 booked_df = pd.read_csv('data/booked_route.csv')
 
 
-# helvetica = tf.Font(family='Helvetica', size=36)
-
-
 class Book(tk.Frame):
     def __init__(self, parent, source=None, destination=None, date=None):
         super().__init__(parent)
@@ -138,6 +135,12 @@ class Book(tk.Frame):
         result_frame = tk.Frame(self, width=1400, height=800)
         result_frame.pack(side=tk.BOTTOM, fill='x')
 
+        if schedules.empty:
+            spacer_label = tk.Label(result_frame, font=('Bold', 14),
+                                    text='No result found for this route')
+            spacer_label.place(relx=.5, rely=.5, anchor="center")
+            return
+
         scroll_y = tk.Scrollbar(result_frame, orient='vertical')
         scroll_y.pack(side='right', fill='y')
         scroll_x = tk.Scrollbar(result_frame, orient='horizontal')
@@ -149,9 +152,10 @@ class Book(tk.Frame):
         style.configure('Treeview', rowheight=100)
 
         # Add a Treeview widget
+        columns = ("Vehicle", "Departure", "Arrival", "Price",
+                   "Available Seats", "Action")
         tree = ttk.Treeview(result_frame,
-                            column=("Vehicle", "Departure", "Arrival", "Price",
-                                    "Available Seats", "Action"),
+                            column=columns,
                             show='headings', height=800,
                             yscrollcommand=scroll_y.set,
                             xscrollcommand=scroll_x.set, selectmode="none")
