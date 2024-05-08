@@ -1,4 +1,5 @@
 import tkinter as tk
+# import tkinter.font as tf
 from tkinter import ttk
 
 import pandas as pd
@@ -6,11 +7,16 @@ from tkcalendar import DateEntry
 
 import locale
 
+from travel_booking_system.constant import white, font, red, blue
+
 vehicle_df = pd.read_csv('data/vehicle.csv')
 location_df = pd.read_csv('data/location.csv')
 route_df = pd.read_csv('data/route.csv')
 schedule_df = pd.read_csv('data/schedule.csv')
 booked_df = pd.read_csv('data/booked_route.csv')
+
+
+# helvetica = tf.Font(family='Helvetica', size=36)
 
 
 class Book(tk.Frame):
@@ -31,23 +37,53 @@ class Book(tk.Frame):
         source_codes = route_df['source_code'].tolist()
         destination_codes = route_df['destination_code'].tolist()
         sources = location_df.query('code in @source_codes')['name'].tolist()
-        destinations = location_df.query('code in @destination_codes')['name'].tolist()
+        destinations = location_df.query('code in @destination_codes')[
+            'name'].tolist()
 
         search_frame = tk.Frame(self, width=1400, height=100,
-                                background='#e5a3a3', padx=20, pady=20)
+                                background=red, padx=20, pady=20)
         search_frame.pack(side=tk.TOP, fill='x')
 
         # create field
-        source_label = tk.Label(search_frame, text='Source', font=('Bold', 14))
+        source_label = tk.Label(search_frame, text='Source', font=('Bold', 14),
+                                background=red, foreground=white)
         source_click = tk.StringVar()
         source_field = tk.OptionMenu(search_frame, source_click, *sources)
-        spacer_label = tk.Label(search_frame, text='<=>', font=('Bold', 14))
+        source_field.config(
+                bg=white,
+                fg="black",
+                font=font,
+                width=20
+        )
+        source_option = source_field.nametowidget(source_field.menuname)
+        source_option.config(
+                bg=white,
+                fg="black",
+                font=font
+        )
+        spacer_label = tk.Label(search_frame, text='-', font=('Bold', 14),
+                                background=red, foreground=white)
         destination_label = tk.Label(search_frame, text='Destination',
-                                     font=('Bold', 14))
-        destination_click = tk.StringVar()
+                                     font=('Bold', 14),
+                                     background=red, foreground=white)
+        destination_click = tk.StringVar(search_frame)
         destination_field = tk.OptionMenu(search_frame, destination_click,
                                           *destinations)
-        date_label = tk.Label(search_frame, text='Date', font=('Bold', 14))
+        destination_field.config(
+                bg=white,
+                fg="black",
+                font=font,
+                width=20
+        )
+        destination_option = destination_field.nametowidget(
+                destination_field.menuname)
+        destination_option.config(
+                bg=white,
+                fg="black",
+                font=font
+        )
+        date_label = tk.Label(search_frame, text='Date', font=('Bold', 14),
+                              background=red, foreground=white)
         date_field = DateEntry(search_frame, date_pattern='yyyy-mm-dd')
         if source:
             source_click.set(source)
@@ -60,7 +96,8 @@ class Book(tk.Frame):
                                   date_field.get(), False)
 
         search_button = tk.Button(search_frame, text='Search',
-                                  font=('Bold', 14), border=0, pady=10,
+                                  font=('Bold', 14), border=0, height=1,
+                                  background=blue, foreground=white,
                                   command=lambda: self.create_result_layout(
                                           source_click.get(),
                                           destination_click.get(),
@@ -153,17 +190,18 @@ class Book(tk.Frame):
         self.tree.pack(fill='x')
 
     def book_route(self, event):
-        selected = self.tree.item(self.tree.focus())
-
-        col = self.tree.identify_column(event.x)
-        print('curItem = ', selected)
-        print('col = ', col)
-
-        if col == '#0':
-            cell_value = selected['text']
-        elif col == '#1':
-            cell_value = selected['values'][0]
-        elif col == '#2':
-            cell_value = selected['values'][1]
-        elif col == '#3':
-            cell_value = selected['values'][2]
+        pass
+        # selected = self.tree.item(self.tree.focus())
+        #
+        # col = self.tree.identify_column(event.x)
+        # print('curItem = ', selected)
+        # print('col = ', col)
+        #
+        # if col == '#0':
+        #     cell_value = selected['text']
+        # elif col == '#1':
+        #     cell_value = selected['values'][0]
+        # elif col == '#2':
+        #     cell_value = selected['values'][1]
+        # elif col == '#3':
+        #     cell_value = selected['values'][2]
