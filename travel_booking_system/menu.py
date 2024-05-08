@@ -2,7 +2,7 @@ import tkinter as tk
 
 from travel_booking_system.constant import gray, blue, yellow
 from travel_booking_system.book import Book
-from travel_booking_system.trip import Trip
+from travel_booking_system.order import Order
 from travel_booking_system.user import Login
 
 
@@ -27,13 +27,13 @@ class Option(tk.Frame):
         book_menu_indicate = tk.Label(self, text='', bg=blue, fg='white')
         book_menu_indicate.place(x=3, y=100, width=10, height=90)
 
-        trip_menu_button = tk.Button(self, text='Trip', font=('Bold', 18),
-                                     background=blue, border=0,
-                                     command=lambda:
-                                     indicate(trip_menu_indicate, trip_page))
-        trip_menu_button.place(x=0, y=200, width=200, height=100)
-        trip_menu_indicate = tk.Label(self, text='', bg=blue)
-        trip_menu_indicate.place(x=3, y=200, width=10, height=90)
+        order_menu_button = tk.Button(self, text='Trip', font=('Bold', 18),
+                                      background=blue, border=0,
+                                      command=lambda:
+                                      indicate(order_menu_indicate, order_page))
+        order_menu_button.place(x=0, y=200, width=200, height=100)
+        order_menu_indicate = tk.Label(self, text='', bg=blue)
+        order_menu_indicate.place(x=3, y=200, width=10, height=90)
 
         login_menu_button = tk.Button(self, text='Login', font=('Bold', 18),
                                       background=blue, border=0,
@@ -56,7 +56,7 @@ class Option(tk.Frame):
 
         def hide_indicate():
             book_menu_indicate.config(bg=blue)
-            trip_menu_indicate.config(bg=blue)
+            order_menu_indicate.config(bg=blue)
             login_menu_indicate.config(bg=blue)
 
         def delete_pages():
@@ -66,8 +66,8 @@ class Option(tk.Frame):
         def book_page():
             Book(main_frame)
 
-        def trip_page():
-            Trip(main_frame)
+        def order_page():
+            Order(main_frame)
 
         def login_page():
             Login(main_frame)

@@ -1,1 +1,5 @@
-id,user_id,fare_id,seat,status
+id,user_id,booking_id,seat,is_paid
+1,1,1,"1;2",true
+2,1,2,"1",false
+3,1,12,"1;2",true
+4,1,13,"1",false

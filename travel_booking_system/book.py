@@ -1,19 +1,11 @@
 import tkinter as tk
-# import tkinter.font as tf
-from tkinter import ttk
-
-import pandas as pd
 from tkcalendar import DateEntry
 
 import locale
 
-from travel_booking_system.constant import white, font, red, blue, black
-
-vehicle_df = pd.read_csv('data/vehicle.csv')
-location_df = pd.read_csv('data/location.csv')
-route_df = pd.read_csv('data/route.csv')
-schedule_df = pd.read_csv('data/schedule.csv')
-booked_df = pd.read_csv('data/booked_route.csv')
+from travel_booking_system.constant import white, font, red, blue, black, \
+    default_result_frame, default_tree, booking_df, schedule_df, route_df, \
+    location_df, vehicle_df, df_by_col
 
 
 class Book(tk.Frame):
@@ -21,7 +13,6 @@ class Book(tk.Frame):
         super().__init__(parent)
         self.result_frame = tk.Frame(self, width=1400, height=800)
         self.sources, self.destinations = self.read_locations()
-        self.tree = None
         self.pack(side=tk.RIGHT)
         self.pack_propagate(False)
         self.configure(width=1400, height=900)
@@ -142,9 +133,8 @@ class Book(tk.Frame):
         if not destination_location.empty:
             destination = destination_location.iloc[0]['code']
         if not source or not destination:
-            result_label = tk.Label(self.result_frame, font=font,
-                                    text='Source or destination not found')
-            result_label.place(relx=.5, rely=.5, anchor="center")
+            default_result_frame(
+                    self.result_frame, 'Source or destination not found')
             valid = False
 
         return valid, source, destination
@@ -157,62 +147,33 @@ class Book(tk.Frame):
         schedules = schedule_df.query('route_id in @route_ids')
 
         if schedules.empty:
-            result_label = tk.Label(self.result_frame, font=font,
-                                    text='No result found for this route')
-            result_label.place(relx=.5, rely=.5, anchor="center")
+            default_result_frame(
+                    self.result_frame, 'No result found for this route')
             return False, None
 
         return True, schedules
 
     def create_tree_result(self, schedules, date):
-        scroll_y = tk.Scrollbar(self.result_frame, orient='vertical')
-        scroll_y.pack(side='right', fill='y')
-        scroll_x = tk.Scrollbar(self.result_frame, orient='horizontal')
-        scroll_x.pack(side='bottom', fill='x')
-
-        style = ttk.Style()
-        style.configure("Treeview.Heading", font=(None, 12))
-        style.configure("Treeview", font=(None, 16))
-        style.configure('Treeview', rowheight=100)
-
         # Add a Treeview widget
         columns = ("Vehicle", "Departure", "Arrival", "Price",
                    "Available Seats", "Action")
-        tree = ttk.Treeview(self.result_frame,
-                            column=columns,
-                            show='headings', height=800,
-                            yscrollcommand=scroll_y.set,
-                            xscrollcommand=scroll_x.set, selectmode="none")
-        tree.column("# 1", anchor=tk.CENTER)
-        tree.heading("# 1", text="Vehicle")
-        tree.column("# 2", anchor=tk.CENTER)
-        tree.heading("# 2", text="Departure")
-        tree.column("# 3", anchor=tk.CENTER)
-        tree.heading("# 3", text="Arrival")
-        tree.column("# 4", anchor=tk.CENTER)
-        tree.heading("# 4", text="Price")
-        tree.column("# 5", anchor=tk.CENTER)
-        tree.heading("# 5", text="Available Seats")
-        tree.column("# 6", anchor=tk.CENTER)
-        tree.heading("# 6", text="")
+        tree = default_tree(self.result_frame, columns)
         tree.bind('<ButtonRelease-1>', self.book_route)
 
         locale.setlocale(locale.LC_ALL, 'id_ID')
 
         for i, schedule in schedules.iterrows():
-            vehicle = vehicle_df.loc[
-                vehicle_df['code'] == schedule['vehicle_code']]
-            booked = booked_df.query('schedule_id == @schedule.id '
-                                     'and date == @date')
-            available_seat = vehicle.iloc[0]['seat']
-            if not booked.empty:
-                booked_seat = booked.iloc[0]['seat'].split(';')
+            vehicle = df_by_col(vehicle_df, 'code', schedule['vehicle_code'])
+            bookings = booking_df.query('schedule_id == @schedule.id '
+                                        'and date == @date')
+            available_seat = vehicle['seat']
+            if not bookings.empty:
+                booked_seat = bookings.iloc[0]['seat'].split(';')
                 available_seat -= len(booked_seat)
             tree.insert('', 'end', values=(
-                vehicle.iloc[0]['name'], schedule['departure'],
+                vehicle['name'], schedule['departure'],
                 schedule['arrival'],
                 locale.currency(schedule['price'], grouping=True),
                 available_seat, 'Book'))
 
-        self.tree = tree
-        self.tree.pack(fill='x')
+        tree.pack(fill='x')
