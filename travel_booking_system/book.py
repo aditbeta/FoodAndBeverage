@@ -28,34 +28,42 @@ class Book(tk.Frame):
         self.columnconfigure((0, 1, 2, 3, 4, 5, 6, 7), weight=1, uniform='a')
         self.pack_propagate(False)
 
+        source_codes = route_df['source_code'].tolist()
+        destination_codes = route_df['destination_code'].tolist()
+        sources = location_df.query('code in @source_codes')['name'].tolist()
+        destinations = location_df.query('code in @destination_codes')['name'].tolist()
+
         search_frame = tk.Frame(self, width=1400, height=100,
                                 background='#e5a3a3', padx=20, pady=20)
         search_frame.pack(side=tk.TOP, fill='x')
 
         # create field
         source_label = tk.Label(search_frame, text='Source', font=('Bold', 14))
-        source_field = tk.Entry(search_frame, font=('Bold', 14))
+        source_click = tk.StringVar()
+        source_field = tk.OptionMenu(search_frame, source_click, *sources)
         spacer_label = tk.Label(search_frame, text='<=>', font=('Bold', 14))
         destination_label = tk.Label(search_frame, text='Destination',
                                      font=('Bold', 14))
-        destination_field = tk.Entry(search_frame, font=('Bold', 14))
+        destination_click = tk.StringVar()
+        destination_field = tk.OptionMenu(search_frame, destination_click,
+                                          *destinations)
         date_label = tk.Label(search_frame, text='Date', font=('Bold', 14))
         date_field = DateEntry(search_frame, date_pattern='yyyy-mm-dd')
         if source:
-            source_field.insert(0, source)
+            source_click.set(source)
         if destination:
-            destination_field.insert(0, destination)
+            destination_click.set(destination)
         if date:
             date_field.delete(0, 'end')
             date_field.insert(0, date)
-        self.create_result_layout(source_field.get(), destination_field.get(),
+        self.create_result_layout(source_click.get(), destination_click.get(),
                                   date_field.get(), False)
 
         search_button = tk.Button(search_frame, text='Search',
                                   font=('Bold', 14), border=0, pady=10,
                                   command=lambda: self.create_result_layout(
-                                          source_field.get(),
-                                          destination_field.get(),
+                                          source_click.get(),
+                                          destination_click.get(),
                                           date_field.get(),
                                           True))
 
@@ -72,15 +80,17 @@ class Book(tk.Frame):
     def create_result_layout(self, source, destination, date, refresh):
         if refresh:
             self.destroy()
-
-            source_location = location_df.query('name == @source')
-            if not source_location.empty:
-                source = source_location.iloc[0]['code']
-            destination_location = location_df.query('name == @destination')
-            if not destination_location.empty:
-                destination = destination_location.iloc[0]['code']
-
             return Book(self.master, source, destination, date)
+
+        source_location = location_df.query('name == @source')
+        if not source_location.empty:
+            source = source_location.iloc[0]['code']
+        destination_location = location_df.query('name == @destination')
+        if not destination_location.empty:
+            destination = destination_location.iloc[0]['code']
+        if not source or not destination:
+            print("Source or destination not found")
+            return
 
         routes = route_df.query(
                 'source_code == @source and destination_code == @destination '
