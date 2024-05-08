@@ -10,6 +10,7 @@ phone_header = 'phone'
 password_header = 'password'
 
 user_dataframe = pd.read_csv('data/user.csv')
+user_id = 0
 
 
 class Login(tk.Frame):
