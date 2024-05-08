@@ -4,14 +4,19 @@ from tkinter import ttk
 import pandas as pd
 from tkcalendar import DateEntry
 
-vehicle_dataframe = pd.read_csv('data/vehicle.csv')
-location_dataframe = pd.read_csv('data/location.csv')
-route_dataframe = pd.read_csv('data/route.csv')
+import locale
+
+vehicle_df = pd.read_csv('data/vehicle.csv')
+location_df = pd.read_csv('data/location.csv')
+route_df = pd.read_csv('data/route.csv')
+schedule_df = pd.read_csv('data/schedule.csv')
+booked_df = pd.read_csv('data/booked_route.csv')
 
 
 class Book(tk.Frame):
     def __init__(self, parent, source=None, destination=None, date=None):
         super().__init__(parent)
+        self.tree = None
         self.pack(side=tk.RIGHT)
         self.pack_propagate(False)
         self.configure(width=1400, height=900)
@@ -69,9 +74,11 @@ class Book(tk.Frame):
             self.destroy()
             return Book(self.master, source, destination, date)
 
-        result = route_dataframe.query(
+        routes = route_df.query(
                 'source_code == @source and destination_code == @destination '
                 'and start_date <= @date and end_date >= @date')
+        route_ids = routes['id'].tolist()
+        schedules = schedule_df.query('route_id in @route_ids')
 
         result_frame = tk.Frame(self, width=1400, height=800)
         result_frame.pack(side=tk.BOTTOM, fill='x')
@@ -107,22 +114,28 @@ class Book(tk.Frame):
         tree.heading("# 6", text="")
         tree.bind('<ButtonRelease-1>', self.book_route)
 
-        for i, element in result.iterrows():
-            vehicle = vehicle_dataframe.loc[
-                vehicle_dataframe['code'] == element['vehicle_code']]
-            available_seat = element['seat'].split(';')
-            available_time = element['time'].split(';')
-            for time in available_time:
-                tree.insert('', 'end', values=(
-                    vehicle.iloc[0]['name'], time, 'test', element['price'],
-                    len(available_seat), "Book Now"))
+        locale.setlocale(locale.LC_ALL, 'id_ID')
+
+        for i, schedule in schedules.iterrows():
+            vehicle = vehicle_df.loc[
+                vehicle_df['code'] == schedule['vehicle_code']]
+            booked = booked_df.query('schedule_id == @schedule.id '
+                                     'and date == @date')
+            available_seat = vehicle.iloc[0]['seat']
+            if not booked.empty:
+                booked_seat = booked.iloc[0]['seat'].split(';')
+                available_seat -= len(booked_seat)
+            tree.insert('', 'end', values=(
+                vehicle.iloc[0]['name'], schedule['departure'],
+                schedule['arrival'],
+                locale.currency(schedule['price'], grouping=True),
+                available_seat, "Book"))
 
         self.tree = tree
-        tree.pack()
+        self.tree.pack(fill='x')
 
     def book_route(self, event):
         selected = self.tree.item(self.tree.focus())
-        
 
         col = self.tree.identify_column(event.x)
         print('curItem = ', selected)
@@ -136,4 +149,3 @@ class Book(tk.Frame):
             cell_value = selected['values'][1]
         elif col == '#3':
             cell_value = selected['values'][2]
-        print('cell_value = ', cell_value)
