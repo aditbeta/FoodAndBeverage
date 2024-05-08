@@ -3,7 +3,7 @@ from tkcalendar import DateEntry
 
 import locale
 
-from travel_booking_system.constant import white, font, red, blue, black, \
+from travel_booking_system.constant import white, font2, red, blue, black, \
     default_result_frame, default_tree, booking_df, schedule_df, route_df, \
     location_df, vehicle_df, df_by_col
 
@@ -29,27 +29,27 @@ class Book(tk.Frame):
         search_frame.pack(side=tk.TOP, fill='x')
 
         # create input layout
-        source_label = tk.Label(search_frame, text='Source', font=font,
+        source_label = tk.Label(search_frame, text='Source', font=font2,
                                 background=red, foreground=white)
         source_click = tk.StringVar(value=source) if source else tk.StringVar()
         source_field = tk.OptionMenu(search_frame, source_click, *self.sources)
-        source_field.config(bg=white, fg=black, font=font, width=20)
+        source_field.config(bg=white, fg=black, font=font2, width=20)
         source_option = source_field.nametowidget(source_field.menuname)
-        source_option.config(bg=white, fg=black, font=font)
-        spacer_label = tk.Label(search_frame, text='-', font=font,
+        source_option.config(bg=white, fg=black, font=font2)
+        spacer_label = tk.Label(search_frame, text='-', font=font2,
                                 background=red, foreground=white)
         destination_label = tk.Label(search_frame, text='Destination',
-                                     font=font,
+                                     font=font2,
                                      background=red, foreground=white)
         destination_click = tk.StringVar(value=destination) \
             if destination else tk.StringVar(search_frame)
         destination_field = tk.OptionMenu(search_frame, destination_click,
                                           *self.destinations)
-        destination_field.config(bg=white, fg=black, font=font, width=20)
+        destination_field.config(bg=white, fg=black, font=font2, width=20)
         destination_option = destination_field.nametowidget(
                 destination_field.menuname)
-        destination_option.config(bg=white, fg=black, font=font)
-        date_label = tk.Label(search_frame, text='Date', font=font,
+        destination_option.config(bg=white, fg=black, font=font2)
+        date_label = tk.Label(search_frame, text='Date', font=font2,
                               background=red, foreground=white)
         date_field = DateEntry(search_frame, date_pattern='yyyy-mm-dd')
         if date:
@@ -60,7 +60,7 @@ class Book(tk.Frame):
                                   date_field.get(), False)
 
         search_button = tk.Button(search_frame, text='Search',
-                                  font=font, border=0, height=1,
+                                  font=font2, border=0, height=1,
                                   background=blue, foreground=white,
                                   command=lambda: self.create_result_layout(
                                           source_click.get(),

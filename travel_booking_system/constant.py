@@ -10,7 +10,8 @@ green = '#0bae54'
 gray = '#f4f7fe'
 white = '#ffffff'
 black = '#000000'
-font = ('Helvetica', 16)
+font1 = ('Helvetica', 18)
+font2 = ('Helvetica', 16)
 
 booking_df = pd.read_csv('data/booking.csv')
 location_df = pd.read_csv('data/location.csv')
@@ -20,7 +21,7 @@ vehicle_df = pd.read_csv('data/vehicle.csv')
 
 
 def default_result_frame(frame, message):
-    label = tk.Label(frame, font=font, text=message)
+    label = tk.Label(frame, font=font2, text=message)
     label.place(relx=.5, rely=.5, anchor=tk.CENTER)
 
 
@@ -58,3 +59,10 @@ def df_by_id(df, data_id):
 
 def df_by_col(df, col, value):
     return df.loc[df[col] == value].iloc[0]
+
+
+def write(path, df, values):
+    last_id = len(df.index)
+    values[0] = last_id+1
+    df.loc[last_id] = values
+    df.to_csv(path, mode='w', index=False, header=True)
