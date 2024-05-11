@@ -12,9 +12,9 @@ order_df = pd.read_csv('data/order.csv')
 
 
 class Order(tk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, user_id):
         super().__init__(parent)
-        self.user_id = 1
+        self.user_id = user_id
         self.order_frame = tk.Frame(self, width=1400, height=800)
         self.pack(side=tk.RIGHT)
         self.pack_propagate(False)
@@ -24,6 +24,11 @@ class Order(tk.Frame):
 
     def create_tree_result(self):
         self.order_frame.pack(side=tk.TOP, fill='x')
+
+        if self.user_id < 1:
+            default_result_frame(
+                    self.order_frame, 'Please login first.')
+            return
 
         orders = order_df.query('user_id == @self.user_id')
         if orders.empty:

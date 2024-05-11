@@ -3,15 +3,15 @@ from tkinter.messagebox import showinfo
 import pandas as pd
 
 from travel_booking_system.book import Book
-from travel_booking_system.constant import write_append, font1
+from travel_booking_system.constant import write_append, font1, df_by_col, \
+    delete_pages
 
-id_header = 'email'
 email_header = 'email'
 phone_header = 'phone'
 password_header = 'password'
 
-user_dataframe = pd.read_csv('data/user.csv')
-user_id = 0
+user_df = pd.read_csv('data/user.csv')
+user_id = -1
 
 
 class Login(tk.Frame):
@@ -28,9 +28,11 @@ class Login(tk.Frame):
         configure_layout(self, False)
 
     def login(self, email, password):
-        if ((user_dataframe[email_header] == email) & (
-                user_dataframe[password_header] == password)).any():
-            Book(self)
+        if ((user_df[email_header] == email) & (
+                user_df[password_header] == password)).any():
+            popup_showinfo("Login Success", "Welcome, " + email)
+            delete_pages(self)
+            Book(self, get_user_id(email))
         else:
             popup_showinfo("Login", "Login failed")
 
@@ -53,14 +55,14 @@ class Register(tk.Frame):
         configure_layout(self, True)
 
     def register_user(self, email, phone, password):
-        if (user_dataframe[email_header] == email).any():
+        if (user_df[email_header] == email).any():
             popup_showinfo("Register Failed", "Username already exists")
         else:
-            write_append('data/user.csv', user_dataframe,
+            write_append('data/user.csv', user_df,
                          [0, email, phone, password])
             popup_showinfo("Register Success", "Welcome, " + email)
             self.destroy()
-            Book(self.master)
+            Book(self.master, get_user_id(email))
 
 
 def configure_layout(self, is_register):
@@ -113,3 +115,9 @@ def configure_layout(self, is_register):
 
 def popup_showinfo(title, message):
     showinfo(title, message)
+
+
+def get_user_id(email):
+    global user_id
+    user_id = df_by_col(user_df, email_header, email)['id']
+    return user_id

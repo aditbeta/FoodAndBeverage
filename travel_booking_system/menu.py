@@ -1,7 +1,8 @@
 import tkinter as tk
+import travel_booking_system.user as user
 
-from travel_booking_system.constant import gray, blue, yellow
 from travel_booking_system.book import Book
+from travel_booking_system.constant import blue, yellow, delete_pages
 from travel_booking_system.order import Order
 from travel_booking_system.user import Login
 
@@ -35,13 +36,15 @@ class Option(tk.Frame):
         order_menu_indicate = tk.Label(self, text='', bg=blue)
         order_menu_indicate.place(x=3, y=200, width=10, height=90)
 
-        login_menu_button = tk.Button(self, text='Login', font=('Bold', 18),
-                                      background=blue, border=0,
-                                      command=lambda:
-                                      indicate(login_menu_indicate, login_page))
-        login_menu_button.place(x=0, y=300, width=200, height=100)
-        login_menu_indicate = tk.Label(self, text='', bg=blue)
-        login_menu_indicate.place(x=3, y=300, width=10, height=90)
+        if user.user_id < 1:
+            login_menu_button = tk.Button(self, text='Login', font=('Bold', 18),
+                                          background=blue, border=0,
+                                          command=lambda:
+                                          indicate(login_menu_indicate,
+                                                   login_page))
+            login_menu_button.place(x=0, y=300, width=200, height=100)
+            login_menu_indicate = tk.Label(self, text='', bg=blue)
+            login_menu_indicate.place(x=3, y=300, width=10, height=90)
 
         exit_menu_button = tk.Button(self, text='Exit', font=('Bold', 18),
                                      background=blue, border=0,
@@ -51,7 +54,7 @@ class Option(tk.Frame):
         def indicate(lb, page):
             hide_indicate()
             lb.config(bg=yellow)
-            delete_pages()
+            delete_pages(main_frame)
             page()
 
         def hide_indicate():
@@ -59,15 +62,11 @@ class Option(tk.Frame):
             order_menu_indicate.config(bg=blue)
             login_menu_indicate.config(bg=blue)
 
-        def delete_pages():
-            for frame in main_frame.winfo_children():
-                frame.destroy()
-
         def book_page():
-            Book(main_frame)
+            Book(main_frame, user.user_id)
 
         def order_page():
-            Order(main_frame)
+            Order(main_frame, user.user_id)
 
         def login_page():
             Login(main_frame)

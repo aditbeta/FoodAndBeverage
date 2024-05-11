@@ -1,8 +1,7 @@
-import tkinter as tk
-from tkinter import ttk
-from tkcalendar import DateEntry
-
 import locale
+import tkinter as tk
+
+from tkcalendar import DateEntry
 
 from travel_booking_system.constant import white, font2, red, blue, black, \
     default_result_frame, default_tree, booking_df, schedule_df, route_df, \
@@ -12,9 +11,11 @@ from travel_booking_system.order import order_df
 
 
 class Book(tk.Frame):
-    def __init__(self, parent, source=None, destination=None, date=None,
-            book=False, schedule=None, booking=None, vehicle=None):
+    def __init__(
+            self, parent, user_id=None, source=None, destination=None,
+            date=None, book=False, schedule=None, booking=None, vehicle=None):
         super().__init__(parent)
+        self.user_id = user_id
         self.df_dict = None
         self.date = date
         self.destination = destination
@@ -128,6 +129,8 @@ class Book(tk.Frame):
         book_button.pack(side=tk.TOP, fill='x')
         selected_label = tk.Label(self.result_frame, text='Selected seat: ')
         selected_label.pack(side=tk.TOP, fill='x')
+        price_label = tk.Label(self.result_frame, text='Price: Rp0,00')
+        price_label.pack(side=tk.TOP, fill='x')
 
         seat_frame = tk.Frame(self.result_frame, width=1000, height=400)
         seat_frame.pack(side=tk.TOP)
@@ -171,6 +174,9 @@ class Book(tk.Frame):
             else:
                 selected.append(seat)
             selected_label["text"] = "Selected seat: " + ", ".join(selected)
+            price = locale.currency(schedule['price'] * len(selected),
+                                    grouping=True)
+            price_label["text"] = "Price: " + price
             if button["bg"] == yellow:
                 button["bg"] = green
                 button["fg"] = white
@@ -187,11 +193,12 @@ class Book(tk.Frame):
                 write_update('data/booking.csv', booking_df, booking_id-1,
                              'seat', updated_booked_seat)
             else:
-                booking_id = write_append('data/booking.csv', booking_df,
-                             [0, schedule['id'], self.date, selected_seat])
+                booking_id = write_append(
+                        'data/booking.csv', booking_df,
+                        [0, schedule['id'], self.date, selected_seat])
 
             write_append('data/order.csv', order_df,
-                         [0, 1, booking_id, selected_seat, False])
+                         [0, self.user_id, booking_id, selected_seat, False])
 
             return self.reload()
 
@@ -277,5 +284,5 @@ class Book(tk.Frame):
 
     def reload(self, book=False, schedule=None, booking=None):
         self.destroy()
-        return Book(self.master, self.source, self.destination, self.date,
+        return Book(self.master, self.user_id, self.source, self.destination, self.date,
                     book, schedule, booking)

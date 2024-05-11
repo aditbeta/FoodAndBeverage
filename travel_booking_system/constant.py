@@ -70,9 +70,14 @@ def write_append(path, df, values):
     values[0] = last_id+1
     df.loc[last_id] = values
     df.to_csv(path, mode='w', index=False, header=True)
-    return last_id
+    return last_id+1
 
 
 def write_update(path, df, index, col, value):
     df.loc[index, col] = value
     df.to_csv(path, index=False, header=True)
+
+
+def delete_pages(parent):
+    for frame in parent.winfo_children():
+        frame.destroy()
