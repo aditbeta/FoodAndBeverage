@@ -18,7 +18,7 @@ class App(tk.Tk):
         self.minsize(size[0], size[1])
 
         # menu
-        self.main = Book(self)
+        self.main = Book(self, "Jakarta", "Solo", "2024-05-20")
         self.option = Option(self, self.main)
 
         # run

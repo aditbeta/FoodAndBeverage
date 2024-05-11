@@ -1,25 +1,37 @@
 import tkinter as tk
+from tkinter import ttk
 from tkcalendar import DateEntry
 
 import locale
 
 from travel_booking_system.constant import white, font2, red, blue, black, \
     default_result_frame, default_tree, booking_df, schedule_df, route_df, \
-    location_df, vehicle_df, df_by_col
+    location_df, vehicle_df, df_by_col, green, df_val, yellow, write_append, \
+    write_update
+from travel_booking_system.order import order_df
 
 
 class Book(tk.Frame):
-    def __init__(self, parent, source=None, destination=None, date=None):
+    def __init__(self, parent, source=None, destination=None, date=None,
+            book=False, schedule=None, booking=None, vehicle=None):
         super().__init__(parent)
+        self.df_dict = None
+        self.date = date
+        self.destination = destination
+        self.source = source
+        self.tree = None
         self.result_frame = tk.Frame(self, width=1400, height=800)
         self.sources, self.destinations = self.read_locations()
         self.pack(side=tk.RIGHT)
         self.pack_propagate(False)
         self.configure(width=1400, height=900)
 
-        self.create_search_frame(source, destination, date)
+        self.create_search_frame(source, destination, date, book, schedule,
+                                 booking, vehicle)
 
-    def create_search_frame(self, source=None, destination=None, date=None):
+    def create_search_frame(
+            self, source=None, destination=None, date=None,
+            book=False, schedule=None, booking=None, vehicle=None):
         self.rowconfigure((0, 1), weight=1, uniform='a')
         self.columnconfigure((0, 1, 2, 3, 4, 5, 6, 7), weight=1, uniform='a')
         self.pack_propagate(False)
@@ -56,8 +68,11 @@ class Book(tk.Frame):
             date_field.delete(0, 'end')
             date_field.insert(0, date)
 
-        self.create_result_layout(source_click.get(), destination_click.get(),
-                                  date_field.get(), False)
+        if book:
+            self.create_book_layout(schedule, booking)
+        else:
+            self.create_result_layout(self.source, self.destination,
+                                      self.date, False)
 
         search_button = tk.Button(search_frame, text='Search',
                                   font=font2, border=0, height=1,
@@ -80,8 +95,10 @@ class Book(tk.Frame):
 
     def create_result_layout(self, source, destination, date, refresh):
         if refresh:
-            self.destroy()
-            return Book(self.master, source, destination, date)
+            self.source = source
+            self.destination = destination
+            self.date = date
+            return self.reload()
 
         self.result_frame.pack(side=tk.BOTTOM, fill='x')
 
@@ -97,22 +114,97 @@ class Book(tk.Frame):
 
         self.create_tree_result(schedules, date)
 
+    def create_book_layout(self, schedule, booking):
+        self.result_frame.pack(side=tk.BOTTOM, fill='x')
+        back_button = tk.Button(self.result_frame, text='Back',
+                                font=font2, border=0, height=1,
+                                background=blue, foreground=white,
+                                command=lambda: self.reload())
+        back_button.pack(side=tk.TOP, fill='x')
+        book_button = tk.Button(self.result_frame, text='Book',
+                                font=font2, border=0, height=1,
+                                background=blue, foreground=white,
+                                command=lambda: book())
+        book_button.pack(side=tk.TOP, fill='x')
+        selected_label = tk.Label(self.result_frame, text='Selected seat: ')
+        selected_label.pack(side=tk.TOP, fill='x')
+
+        seat_frame = tk.Frame(self.result_frame, width=1000, height=400)
+        seat_frame.pack(side=tk.TOP)
+
+        i = 1
+        row1 = [4]
+        row2 = [1, 2, 3]
+        row3 = [1, 2, 4]
+        row4 = [1, 2, 4]
+        row5 = [1, 2, 3, 4]
+        selected = []
+        booked_seat = []
+        if not booking.empty:
+            booked_seat = df_val(booking, 'seat').split(';')
+        for x in range(5):
+            for y in range(4):
+                if y + 1 in eval('row' + str(x + 1)):
+                    if str(i) in booked_seat:
+                        btn = tk.Button(seat_frame, fg=white, bg=red, text=i)
+                        btn['state'] = tk.DISABLED
+                    else:
+                        btn = tk.Button(seat_frame, bg=yellow, text=i)
+                        btn["command"] = lambda btn=btn: click(btn)
+                    i += 1
+                else:
+                    btn = tk.Button(seat_frame, bg='white')
+                    btn['state'] = tk.DISABLED
+                btn.config(width=5, height=5)
+                btn.grid(column=x, row=y, sticky='news')
+
+        for x in range(5):
+            tk.Grid.columnconfigure(seat_frame, x, weight=1)
+
+        for y in range(4):
+            tk.Grid.rowconfigure(seat_frame, y, weight=1)
+
+        def click(button):
+            seat = str(button["text"])
+            if seat in selected:
+                selected.remove(seat)
+            else:
+                selected.append(seat)
+            selected_label["text"] = "Selected seat: " + ", ".join(selected)
+            if button["bg"] == yellow:
+                button["bg"] = green
+                button["fg"] = white
+            else:
+                button["bg"] = yellow
+                button["fg"] = black
+
+        def book():
+            selected_seat = ";".join(selected)
+
+            if not booking.empty:
+                booking_id = df_val(booking, 'id')
+                updated_booked_seat = ';'.join(booked_seat + selected)
+                write_update('data/booking.csv', booking_df, booking_id-1,
+                             'seat', updated_booked_seat)
+            else:
+                booking_id = write_append('data/booking.csv', booking_df,
+                             [0, schedule['id'], self.date, selected_seat])
+
+            write_append('data/order.csv', order_df,
+                         [0, 1, booking_id, selected_seat, False])
+
+            return self.reload()
+
     def book_route(self, event):
-        pass
-        # selected = self.tree.item(self.tree.focus())
-        #
-        # col = self.tree.identify_column(event.x)
-        # print('curItem = ', selected)
-        # print('col = ', col)
-        #
-        # if col == '#0':
-        #     cell_value = selected['text']
-        # elif col == '#1':
-        #     cell_value = selected['values'][0]
-        # elif col == '#2':
-        #     cell_value = selected['values'][1]
-        # elif col == '#3':
-        #     cell_value = selected['values'][2]
+        selected = self.tree.item(self.tree.focus())
+
+        col = self.tree.identify_column(event.x)
+
+        if col != '#6':
+            return
+
+        return self.reload(True, self.df_dict[selected['values'][-1]][0],
+                           self.df_dict[selected['values'][-1]][1])
 
     @staticmethod
     def read_locations():
@@ -155,25 +247,35 @@ class Book(tk.Frame):
 
     def create_tree_result(self, schedules, date):
         # Add a Treeview widget
+        hidden_columns = ("ID",)
         columns = ("Vehicle", "Departure", "Arrival", "Price",
                    "Available Seats", "Action")
-        tree = default_tree(self.result_frame, columns)
+        tree = default_tree(self.result_frame, columns + hidden_columns)
+        tree["displaycolumns"] = columns
         tree.bind('<ButtonRelease-1>', self.book_route)
 
         locale.setlocale(locale.LC_ALL, 'id_ID')
 
+        df_dict = {}
         for i, schedule in schedules.iterrows():
             vehicle = df_by_col(vehicle_df, 'code', schedule['vehicle_code'])
             bookings = booking_df.query('schedule_id == @schedule.id '
                                         'and date == @date')
+            df_dict[schedule['id']] = [schedule, bookings]
             available_seat = vehicle['seat']
             if not bookings.empty:
-                booked_seat = bookings.iloc[0]['seat'].split(';')
+                booked_seat = df_val(bookings, 'seat').split(';')
                 available_seat -= len(booked_seat)
             tree.insert('', 'end', values=(
-                vehicle['name'], schedule['departure'],
-                schedule['arrival'],
+                vehicle['name'], schedule['departure'], schedule['arrival'],
                 locale.currency(schedule['price'], grouping=True),
-                available_seat, 'Book'))
+                available_seat, 'Book', schedule['id']))
 
         tree.pack(fill='x')
+        self.tree = tree
+        self.df_dict = df_dict
+
+    def reload(self, book=False, schedule=None, booking=None):
+        self.destroy()
+        return Book(self.master, self.source, self.destination, self.date,
+                    book, schedule, booking)

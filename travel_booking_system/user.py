@@ -3,7 +3,7 @@ from tkinter.messagebox import showinfo
 import pandas as pd
 
 from travel_booking_system.book import Book
-from travel_booking_system.constant import write, font1
+from travel_booking_system.constant import write_append, font1
 
 id_header = 'email'
 email_header = 'email'
@@ -56,7 +56,8 @@ class Register(tk.Frame):
         if (user_dataframe[email_header] == email).any():
             popup_showinfo("Register Failed", "Username already exists")
         else:
-            write('data/user.csv', user_dataframe, [0, email, phone, password])
+            write_append('data/user.csv', user_dataframe,
+                         [0, email, phone, password])
             popup_showinfo("Register Success", "Welcome, " + email)
             self.destroy()
             Book(self.master)

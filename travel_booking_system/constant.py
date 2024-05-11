@@ -61,8 +61,18 @@ def df_by_col(df, col, value):
     return df.loc[df[col] == value].iloc[0]
 
 
-def write(path, df, values):
+def df_val(df, col):
+    return df.iloc[0][col]
+
+
+def write_append(path, df, values):
     last_id = len(df.index)
     values[0] = last_id+1
     df.loc[last_id] = values
     df.to_csv(path, mode='w', index=False, header=True)
+    return last_id
+
+
+def write_update(path, df, index, col, value):
+    df.loc[index, col] = value
+    df.to_csv(path, index=False, header=True)
