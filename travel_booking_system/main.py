@@ -1,7 +1,7 @@
 import tkinter as tk
 
-from travel_booking_system.book import Book
-from travel_booking_system.menu import Option
+from book import Book
+from menu import Option
 
 
 class App(tk.Tk):
@@ -17,8 +17,7 @@ class App(tk.Tk):
         self.geometry('%dx%d+%d+%d' % (size[0], size[1], x, y))
         self.minsize(size[0], size[1])
 
-        # menu
-        self.book = Book(self, None, "Jakarta", "Solo", "2024-05-20")
+        self.book = Book(self)
         self.option = Option(self, self.book)
 
         # run

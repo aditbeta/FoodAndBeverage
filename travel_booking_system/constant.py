@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 import pandas as pd
+import os
 
 blue = '#007afd'
 yellow = '#fede00'
@@ -13,11 +14,19 @@ black = '#000000'
 font1 = ('Helvetica', 18)
 font2 = ('Helvetica', 16)
 
-booking_df = pd.read_csv('data/booking.csv')
-location_df = pd.read_csv('data/location.csv')
-route_df = pd.read_csv('data/route.csv')
-schedule_df = pd.read_csv('data/schedule.csv')
-vehicle_df = pd.read_csv('data/vehicle.csv')
+
+def full_path(path):
+    return os.path.join(os.path.dirname(__file__), path)
+
+
+def read_csv(path):
+    return pd.read_csv(full_path(path))
+
+booking_df = read_csv('data/booking.csv')
+location_df = read_csv('data/location.csv')
+route_df = read_csv('data/route.csv')
+schedule_df = read_csv('data/schedule.csv')
+vehicle_df = read_csv('data/vehicle.csv')
 
 
 def default_result_frame(frame, message):
@@ -69,13 +78,13 @@ def write_append(path, df, values):
     last_id = len(df.index)
     values[0] = last_id+1
     df.loc[last_id] = values
-    df.to_csv(path, mode='w', index=False, header=True)
+    df.to_csv(full_path(path), mode='w', index=False, header=True)
     return last_id+1
 
 
 def write_update(path, df, index, col, value):
     df.loc[index, col] = value
-    df.to_csv(path, index=False, header=True)
+    df.to_csv(full_path(path), index=False, header=True)
 
 
 def delete_pages(parent):
