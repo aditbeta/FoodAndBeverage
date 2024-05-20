@@ -8,6 +8,7 @@ from constant import white, font2, red, blue, black, \
     location_df, vehicle_df, df_by_col, green, df_val, yellow, write_append, \
     write_update
 from order import order_df
+from travel_booking_system.payment import Payment
 
 
 class Book(tk.Frame):
@@ -200,7 +201,8 @@ class Book(tk.Frame):
             write_append('data/order.csv', order_df,
                          [0, self.user_id, booking_id, selected_seat, False])
 
-            return self.reload()
+            self.destroy()
+            return Payment(self.master)
 
     def book_route(self, event):
         selected = self.tree.item(self.tree.focus())
