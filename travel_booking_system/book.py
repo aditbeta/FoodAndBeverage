@@ -191,18 +191,19 @@ class Book(tk.Frame):
             if not booking.empty:
                 booking_id = df_val(booking, 'id')
                 updated_booked_seat = ';'.join(booked_seat + selected)
-                write_update('data/booking.csv', booking_df, booking_id-1,
+                write_update('data/booking.csv', booking_df, booking_id - 1,
                              'seat', updated_booked_seat)
             else:
                 booking_id = write_append(
                         'data/booking.csv', booking_df,
                         [0, schedule['id'], self.date, selected_seat])
 
-            write_append('data/order.csv', order_df,
-                         [0, self.user_id, booking_id, selected_seat, False])
+            order_id = write_append('data/order.csv', order_df,
+                                    [0, int(self.user_id), booking_id,
+                                     selected_seat, False])
 
             self.destroy()
-            return Payment(self.master, booking_id, 'virtual_account')
+            return Payment(self.master, order_id, booking_id, 'virtual_account')
 
     def book_route(self, event):
         selected = self.tree.item(self.tree.focus())
@@ -286,5 +287,6 @@ class Book(tk.Frame):
 
     def reload(self, book=False, schedule=None, booking=None):
         self.destroy()
-        return Book(self.master, self.user_id, self.source, self.destination, self.date,
+        return Book(self.master, self.user_id, self.source, self.destination,
+                    self.date,
                     book, schedule, booking)

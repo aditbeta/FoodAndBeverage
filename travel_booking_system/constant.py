@@ -23,11 +23,13 @@ def full_path(path):
 def read_csv(path):
     return pd.read_csv(full_path(path))
 
+
 booking_df = read_csv('data/booking.csv')
 location_df = read_csv('data/location.csv')
 route_df = read_csv('data/route.csv')
 schedule_df = read_csv('data/schedule.csv')
 vehicle_df = read_csv('data/vehicle.csv')
+order_df = read_csv('data/order.csv')
 
 
 def default_result_frame(frame, message):
@@ -77,10 +79,10 @@ def df_val(df, col):
 
 def write_append(path, df, values):
     last_id = len(df.index)
-    values[0] = last_id+1
+    values[0] = last_id + 1
     df.loc[last_id] = values
     df.to_csv(full_path(path), mode='w', index=False, header=True)
-    return last_id+1
+    return last_id + 1
 
 
 def write_update(path, df, index, col, value):
