@@ -1,6 +1,4 @@
 import tkinter as tk
-from tkinter.messagebox import showinfo
-import pandas as pd
 
 from book import Book
 from constant import write_append, font1, df_by_col, \
@@ -20,9 +18,8 @@ class Login(tk.Frame):
         self.pack()
         self.pack_propagate(False)
         self.configure(width=1400, height=900)
-        self.login(email='test', password='test')
 
-        # self.create_layout()
+        self.create_layout()
 
     def create_layout(self):
         # create grid

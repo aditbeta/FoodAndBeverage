@@ -5,6 +5,7 @@ from PIL import ImageTk, Image
 
 from constant import red, font2, white, full_path, blue, popup_showinfo, \
     df_by_id, order_df, booking_df, write_update, schedule_df, route_df
+from travel_booking_system.ticket import Ticket
 
 
 class Payment(tk.Frame):
@@ -78,8 +79,8 @@ class Payment(tk.Frame):
                          'is_paid', True)
             popup_showinfo("Payment",
                            "Payment Success\nThank you for booking with us!")
-            # self.destroy()
-            # return Order(self.master, order['user_id'])
+            self.destroy()
+            return Ticket(self.master, self.order_id)
 
         radio_va.pack(side=tk.TOP, fill='x')
         if payment_option == 'virtual_account':
