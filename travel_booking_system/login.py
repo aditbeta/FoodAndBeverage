@@ -4,7 +4,7 @@ import pandas as pd
 
 from book import Book
 from constant import write_append, font1, df_by_col, \
-    delete_pages, read_csv
+    delete_pages, read_csv, popup_showinfo
 
 email_header = 'email'
 phone_header = 'phone'
@@ -20,8 +20,9 @@ class Login(tk.Frame):
         self.pack()
         self.pack_propagate(False)
         self.configure(width=1400, height=900)
+        self.login(email='test', password='test')
 
-        self.create_layout()
+        # self.create_layout()
 
     def create_layout(self):
         # create grid
@@ -111,10 +112,6 @@ def configure_layout(self, is_register):
         password_field.grid(row=3, column=1, columnspan=2, pady=20,
                             sticky='news')
         register_button.grid(row=4, column=0, columnspan=3, sticky='news')
-
-
-def popup_showinfo(title, message):
-    showinfo(title, message)
 
 
 def get_user_id(email):

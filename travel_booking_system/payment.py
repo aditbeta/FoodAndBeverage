@@ -1,68 +1,78 @@
 import tkinter as tk
 
-from constant import write_append, font1, df_by_col, \
-    delete_pages, read_csv
+from PIL import ImageTk, Image
+
+from constant import red, font2, white, full_path, blue, popup_showinfo
+from travel_booking_system.order import Order
 
 
 class Payment(tk.Frame):
-    def __init__(self, parent):
+    def __init__(self, parent, booking_id, payment_option=None):
         super().__init__(parent)
         self.pack()
         self.pack_propagate(False)
         self.configure(width=1400, height=900)
 
-        self.create_layout()
+        self.create_layout(payment_option)
 
-    def create_layout(self):
+    def create_layout(self, payment_option):
         # create grid
-        configure_layout(self)
+        configure_layout(self, payment_option)
 
 
-def configure_layout(self):
+def configure_layout(self, payment_option):
     self.rowconfigure((0, 1, 2, 3), weight=1, uniform='a')
     self.columnconfigure((0, 1, 2), weight=1, uniform='a')
 
     # Create a label widget
-    payment_label = tk.Label(self, text='Payment Confirmation', font=font1)
+    payment_frame = tk.Frame(self, width=1400, height=100,
+                             background=red, padx=20, pady=20)
+    payment_frame.pack()
+    payment_label = tk.Label(payment_frame, text='Payment Confirmation',
+                             font=font2, background=red, foreground=white)
     payment_label.grid(row=1, column=0, sticky='news')
 
+    payment_option_frame = tk.Frame(self, width=1400, height=800,
+                                    background=red, padx=20, pady=20)
+    payment_option_frame.pack(side=tk.BOTTOM, fill='x')
+    var = tk.StringVar(None, payment_option)
+    radio_va = tk.Radiobutton(payment_option_frame, text="Virtual Account",
+                              variable=var, value='virtual_account', font=font2,
+                              command=lambda: reload(self, 1, 'virtual_account'))
+    radio_qris = tk.Radiobutton(payment_option_frame, text="QRIS",
+                                variable=var, value='qris', font=font2,
+                                command=lambda: reload(self, 1, 'qris'))
+    va_label = tk.Label(payment_option_frame, text='Virtual Account - Bank '
+                                                   'Indonesia\nNo Virtual '
+                                                   'Account: 1234567890',
+                        font=font2)
+    qr_image_path = Image.open(full_path('data/qr.png'))
+    qr_image = ImageTk.PhotoImage(qr_image_path)
+    qr_label = tk.Label(payment_option_frame, image=qr_image)
+    qr_label.image = qr_image
+    book_button = tk.Button(payment_option_frame, text='Book',
+                            font=font2, border=0, height=1,
+                            background=blue, foreground=white,
+                            command=lambda: book())
 
-    # email_field = tk.Entry(self, font=font1)
-    # phone_label = tk.Label(self, text='Phone', font=font1)
-    # phone_field = tk.Entry(self, font=font1)
-    # password_label = tk.Label(self, text='Password', font=font1)
-    # password_field = tk.Entry(self, show='*', font=font1)
+    def book():
+        popup_showinfo("Payment", "Payment Success\nThank you for booking with us!")
+        self.destroy()
+        return Order(self, 1)
 
-    # Place the label in the window
-    # email_field.grid(row=1, column=1, columnspan=2, pady=20,
-    #                  sticky='news')
+    radio_va.grid(row=2, column=0, sticky='news')
+    if payment_option == 'virtual_account':
+        va_label.grid(row=3, column=0, sticky='news')
+        radio_qris.grid(row=4, column=0, sticky='news')
+        book_button.grid(row=5, column=0, sticky='news')
+    elif payment_option == 'qris':
+        radio_qris.grid(row=3, column=0, sticky='news')
+        qr_label.grid(row=4, column=0, sticky='news')
+        book_button.grid(row=5, column=0, sticky='news')
+    else:
+        radio_qris.grid(row=3, column=0, sticky='news')
 
-    # if not is_register:
-    #     login_button = tk.Button(
-    #             self, text='Login', font=font1, border=0, command=lambda:
-    #             self.login(email_field.get(), password_field.get()))
-    #     register_label = tk.Label(self, text='Don\'t have an account?',
-    #                               font=font1)
-    #     register_button = tk.Button(self, text='Register', font=font1,
-    #                                 border=0,
-    #                                 command=lambda: self.register_page())
-    #
-    #     password_label.grid(row=2, column=0, sticky='news')
-    #     password_field.grid(row=2, column=1, columnspan=2, pady=20,
-    #                         sticky='news')
-    #     login_button.grid(row=3, column=0, columnspan=3, sticky='news')
-    #     register_label.grid(row=4, column=0, columnspan=2, sticky='news')
-    #     register_button.grid(row=4, column=2, sticky='news')
-    # else:
-    #     register_button = tk.Button(
-    #             self, text='Register', font=font1, border=0, command=lambda:
-    #             self.register_user(email_field.get(), phone_field.get(),
-    #                                password_field.get()))
-    #
-    #     phone_label.grid(row=2, column=0, sticky='news')
-    #     phone_field.grid(row=2, column=1, columnspan=2, pady=20,
-    #                      sticky='news')
-    #     password_label.grid(row=3, column=0, sticky='news')
-    #     password_field.grid(row=3, column=1, columnspan=2, pady=20,
-    #                         sticky='news')
-    #     register_button.grid(row=4, column=0, columnspan=3, sticky='news')
+
+def reload(self, booking_id, payment_option):
+    self.destroy()
+    return Payment(self.master, booking_id, payment_option)

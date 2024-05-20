@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter.messagebox import showinfo
 
 import pandas as pd
 import os
@@ -90,3 +91,7 @@ def write_update(path, df, index, col, value):
 def delete_pages(parent):
     for frame in parent.winfo_children():
         frame.destroy()
+
+
+def popup_showinfo(title, message):
+    showinfo(title, message)

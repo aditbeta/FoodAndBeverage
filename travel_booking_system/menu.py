@@ -1,10 +1,10 @@
 import tkinter as tk
-import user as user
+import login as user
 
 from book import Book
 from constant import blue, yellow, delete_pages
 from order import Order
-from user import Login
+from login import Login
 
 
 class Option(tk.Frame):

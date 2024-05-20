@@ -17,7 +17,7 @@ class App(tk.Tk):
         self.geometry('%dx%d+%d+%d' % (size[0], size[1], x, y))
         self.minsize(size[0], size[1])
 
-        self.book = Book(self)
+        self.book = Book(self, 1, "Jakarta", "Solo", "2024-05-30")
         self.option = Option(self, self.book)
 
         # run

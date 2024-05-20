@@ -202,7 +202,7 @@ class Book(tk.Frame):
                          [0, self.user_id, booking_id, selected_seat, False])
 
             self.destroy()
-            return Payment(self.master)
+            return Payment(self.master, booking_id, 'virtual_account')
 
     def book_route(self, event):
         selected = self.tree.item(self.tree.focus())
