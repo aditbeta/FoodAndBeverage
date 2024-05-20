@@ -1,10 +1,10 @@
 import tkinter as tk
-import travel_booking_system.user as user
+import user as user
 
-from travel_booking_system.book import Book
-from travel_booking_system.constant import blue, yellow, delete_pages
-from travel_booking_system.order import Order
-from travel_booking_system.user import Login
+from book import Book
+from constant import blue, yellow, delete_pages
+from order import Order
+from user import Login
 
 
 class Option(tk.Frame):

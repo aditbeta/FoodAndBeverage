@@ -2,15 +2,15 @@ import tkinter as tk
 from tkinter.messagebox import showinfo
 import pandas as pd
 
-from travel_booking_system.book import Book
-from travel_booking_system.constant import write_append, font1, df_by_col, \
-    delete_pages
+from book import Book
+from constant import write_append, font1, df_by_col, \
+    delete_pages, read_csv
 
 email_header = 'email'
 phone_header = 'phone'
 password_header = 'password'
 
-user_df = pd.read_csv('data/user.csv')
+user_df = read_csv('data/user.csv')
 user_id = -1
 
 

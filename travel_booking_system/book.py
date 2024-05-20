@@ -3,11 +3,11 @@ import tkinter as tk
 
 from tkcalendar import DateEntry
 
-from travel_booking_system.constant import white, font2, red, blue, black, \
+from constant import white, font2, red, blue, black, \
     default_result_frame, default_tree, booking_df, schedule_df, route_df, \
     location_df, vehicle_df, df_by_col, green, df_val, yellow, write_append, \
     write_update
-from travel_booking_system.order import order_df
+from order import order_df
 
 
 class Book(tk.Frame):
