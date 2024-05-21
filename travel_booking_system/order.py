@@ -4,7 +4,7 @@ from datetime import datetime
 from constant import default_result_frame, default_tree, \
     booking_df, schedule_df, route_df, vehicle_df, location_df, df_by_id, \
     df_by_col, order_df
-from travel_booking_system.payment import Payment
+from payment import Payment
 
 
 class Order(tk.Frame):

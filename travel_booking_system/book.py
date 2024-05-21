@@ -8,7 +8,7 @@ from constant import white, font2, red, blue, black, \
     location_df, vehicle_df, df_by_col, green, df_val, yellow, write_append, \
     write_update
 from order import order_df
-from travel_booking_system.payment import Payment
+from payment import Payment
 
 
 class Book(tk.Frame):

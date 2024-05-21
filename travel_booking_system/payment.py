@@ -5,7 +5,7 @@ from PIL import ImageTk, Image
 
 from constant import red, font2, white, full_path, blue, popup_showinfo, \
     df_by_id, order_df, booking_df, write_update, schedule_df, route_df
-from travel_booking_system.ticket import Ticket
+from ticket import Ticket
 
 
 class Payment(tk.Frame):
