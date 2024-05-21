@@ -6,7 +6,7 @@ from tkcalendar import DateEntry
 from constant import white, font2, red, blue, black, \
     default_result_frame, default_tree, booking_df, schedule_df, route_df, \
     location_df, vehicle_df, df_by_col, green, df_val, yellow, write_append, \
-    write_update
+    write_update, width, height
 from order import order_df
 from payment import Payment
 
@@ -16,17 +16,19 @@ class Book(tk.Frame):
             self, parent, user_id=None, source=None, destination=None,
             date=None, book=False, schedule=None, booking=None, vehicle=None):
         super().__init__(parent)
+        self.width = width * 7/8
+        self.height = height
         self.user_id = user_id
         self.df_dict = None
         self.date = date
         self.destination = destination
         self.source = source
         self.tree = None
-        self.result_frame = tk.Frame(self, width=1400, height=800)
+        self.result_frame = tk.Frame(self, width=self.height, height=self.height * 8/9)
         self.sources, self.destinations = self.read_locations()
         self.pack(side=tk.RIGHT)
         self.pack_propagate(False)
-        self.configure(width=1400, height=900)
+        self.configure(width=self.height, height=self.width)
 
         self.create_search_frame(source, destination, date, book, schedule,
                                  booking, vehicle)
@@ -38,7 +40,7 @@ class Book(tk.Frame):
         self.columnconfigure((0, 1, 2, 3, 4, 5, 6, 7), weight=1, uniform='a')
         self.pack_propagate(False)
 
-        search_frame = tk.Frame(self, width=1400, height=100,
+        search_frame = tk.Frame(self, width=self.height, height=self.height * 1/9,
                                 background=red, padx=20, pady=20)
         search_frame.pack(side=tk.TOP, fill='x')
 

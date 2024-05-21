@@ -14,6 +14,8 @@ white = '#ffffff'
 black = '#000000'
 font1 = ('Helvetica', 18)
 font2 = ('Helvetica', 16)
+width = 1280
+height = 720
 
 
 def full_path(path):

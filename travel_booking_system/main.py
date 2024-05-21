@@ -2,6 +2,7 @@ import tkinter as tk
 
 from book import Book
 from menu import Option
+from constant import width, height
 
 
 class App(tk.Tk):
@@ -24,4 +25,4 @@ class App(tk.Tk):
         self.mainloop()
 
 
-App("Menu", (1600, 900))
+App("Menu", (width, height))
