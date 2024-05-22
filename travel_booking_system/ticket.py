@@ -1,8 +1,9 @@
 import locale
 import tkinter as tk
+import constant as c
 
 from constant import font1, full_path, df_by_id, order_df, booking_df, \
-    schedule_df, vehicle_df, route_df, location_df, df_by_col, width, height
+    schedule_df, vehicle_df, route_df, location_df, df_by_col
 
 from PIL import ImageTk, Image
 
@@ -12,7 +13,7 @@ class Ticket(tk.Frame):
         super().__init__(parent)
         self.pack()
         self.pack_propagate(False)
-        self.configure(width=width * 7/8, height=height)
+        self.configure(width=c.width * 7/8, height=c.height)
         self.order_id = order_id
 
         self.configure_layout()

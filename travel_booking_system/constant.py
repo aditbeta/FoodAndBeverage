@@ -15,8 +15,8 @@ white = '#ffffff'
 black = '#000000'
 font1 = ('Helvetica', 18)
 font2 = ('Helvetica', 16)
-width = 1600
-height = 900
+width = 800
+height = 450
 default_source = 'Solo'
 default_destination = 'Jakarta'
 default_date = datetime.today().strftime('%Y-%m-%d')
@@ -36,6 +36,12 @@ route_df = read_csv('data/route.csv')
 schedule_df = read_csv('data/schedule.csv')
 vehicle_df = read_csv('data/vehicle.csv')
 order_df = read_csv('data/order.csv')
+
+
+def set_screen(screen_width, screen_height):
+    global width, height
+    width = screen_width
+    height = screen_height
 
 
 def default_result_frame(frame, message):

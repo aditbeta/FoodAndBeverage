@@ -1,5 +1,6 @@
 import locale
 import tkinter as tk
+import constant as c
 
 from PIL import ImageTk, Image
 
@@ -13,7 +14,7 @@ class Payment(tk.Frame):
         super().__init__(parent)
         self.pack()
         self.pack_propagate(False)
-        self.configure(width=width * 7/8, height=height)
+        self.configure(width=c.width * 7/8, height=c.height)
         self.order_id = order_id
         self.booking_id = booking_id
 
@@ -35,14 +36,14 @@ class Payment(tk.Frame):
             'destination_code'] + ' ' + date
 
         # Create a label widget
-        payment_frame = tk.Frame(self, width=width * 7/8, height=height * 1/9,
+        payment_frame = tk.Frame(self, width=c.width * 7/8, height=c.height * 1/9,
                                  background=red, padx=20, pady=20)
         payment_frame.pack()
         payment_label = tk.Label(payment_frame, text='Payment Confirmation',
                                  font=font2, background=red, foreground=white)
         payment_label.grid(row=1, column=0, sticky='news')
 
-        payment_option_frame = tk.Frame(self, width=width * 7/8, height=height * 8/9,
+        payment_option_frame = tk.Frame(self, width=c.width * 7/8, height=c.height * 8/9,
                                         background=red, padx=20, pady=20)
         payment_option_frame.pack(side=tk.BOTTOM, fill='x')
         trip_label = tk.Label(payment_option_frame, text=trip_detail)

@@ -1,9 +1,10 @@
 import tkinter as tk
 from datetime import datetime
+import constant as c
 
 from constant import default_result_frame, default_tree, \
     booking_df, schedule_df, route_df, vehicle_df, location_df, df_by_id, \
-    df_by_col, order_df, width, height
+    df_by_col, order_df
 from payment import Payment
 
 
@@ -12,10 +13,10 @@ class Order(tk.Frame):
         super().__init__(parent)
         self.tree = None
         self.user_id = user_id
-        self.order_frame = tk.Frame(self, width=width * 7/8, height=height * 8/9)
+        self.order_frame = tk.Frame(self, width=c.width * 7/8, height=c.height * 8/9)
         self.pack(side=tk.RIGHT)
         self.pack_propagate(False)
-        self.configure(width=width * 7/8, height=height)
+        self.configure(width=c.width * 7/8, height=c.height)
 
         self.create_tree_result()
 

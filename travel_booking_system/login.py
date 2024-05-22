@@ -1,9 +1,9 @@
 import tkinter as tk
+import constant as c
 
 from book import Book
 from constant import write_append, font1, df_by_col, \
-    delete_pages, read_csv, popup_showinfo, width, height, \
-    default_source, default_destination, default_date
+    delete_pages, read_csv, popup_showinfo, default_source, default_destination, default_date
 
 email_header = 'email'
 phone_header = 'phone'
@@ -20,7 +20,7 @@ class Login(tk.Frame):
         self.main_frame = parent
         self.pack()
         self.pack_propagate(False)
-        self.configure(width=width, height=height)
+        self.configure(width=c.width, height=c.height)
 
         configure_layout(self, False)
 
@@ -43,7 +43,7 @@ class Register(tk.Frame):
         super().__init__(parent)
         self.pack()
         self.pack_propagate(False)
-        self.configure(width=width, height=height)
+        self.configure(width=c.width, height=c.height)
 
         configure_layout(self, True)
 
