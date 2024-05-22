@@ -1,9 +1,9 @@
 id,user_id,booking_id,seat,is_paid
-1,1.0,1,1;2,True
-2,1.0,2,1,False
-3,1.0,12,1;2,True
-4,1.0,13,1,False
-5,1.0,1,5,False
-6,2.0,14,2,False
-7,,5,7;10,False
-8,2.0,15,2;3,False
+1,1,1,1;2,True
+2,1,2,1,False
+3,1,12,1;2,True
+4,1,13,1,False
+5,1,1,5,False
+6,2,14,2,False
+7,2,18,2;3,False
+8,2,19,5;6,True

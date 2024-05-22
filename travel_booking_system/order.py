@@ -15,7 +15,7 @@ class Order(tk.Frame):
         self.order_frame = tk.Frame(self, width=width * 7/8, height=height * 8/9)
         self.pack(side=tk.RIGHT)
         self.pack_propagate(False)
-        self.configure(width=width * 7/8, height=height * 8/9)
+        self.configure(width=width * 7/8, height=height)
 
         self.create_tree_result()
 

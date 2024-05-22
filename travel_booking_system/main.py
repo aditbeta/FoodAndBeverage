@@ -2,7 +2,8 @@ import tkinter as tk
 
 from book import Book
 from menu import Option
-from constant import width, height
+from constant import width, height, \
+    default_source, default_destination, default_date
 
 
 class App(tk.Tk):
@@ -18,7 +19,7 @@ class App(tk.Tk):
         self.geometry('%dx%d+%d+%d' % (size[0], size[1], x, y))
         self.minsize(size[0], size[1])
 
-        self.book = Book(self, 1, "Jakarta", "Solo", "2024-05-30")
+        self.book = Book(self, None, default_source, default_destination, default_date)
         self.option = Option(self, self.book)
 
         # run

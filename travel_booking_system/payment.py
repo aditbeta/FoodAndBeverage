@@ -69,12 +69,12 @@ class Payment(tk.Frame):
         qr_image = ImageTk.PhotoImage(qr_image_path)
         qr_label = tk.Label(payment_option_frame, image=qr_image)
         qr_label.image = qr_image
-        book_button = tk.Button(payment_option_frame, text='Book',
+        book_button = tk.Button(payment_option_frame, text='Pay',
                                 font=font2, border=0, height=1,
                                 background=blue, foreground=white,
-                                command=lambda: book())
+                                command=lambda: pay())
 
-        def book():
+        def pay():
             write_update('data/order.csv', order_df, self.order_id - 1,
                          'is_paid', True)
             popup_showinfo("Payment",

@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter.messagebox import showinfo
+from datetime import datetime
 
 import pandas as pd
 import os
@@ -14,8 +15,11 @@ white = '#ffffff'
 black = '#000000'
 font1 = ('Helvetica', 18)
 font2 = ('Helvetica', 16)
-width = 1280
-height = 720
+width = 1600
+height = 900
+default_source = 'Solo'
+default_destination = 'Jakarta'
+default_date = datetime.today().strftime('%Y-%m-%d')
 
 
 def full_path(path):
