@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter.messagebox import showinfo
+from datetime import datetime
 
 import pandas as pd
 import os
@@ -13,6 +15,11 @@ white = '#ffffff'
 black = '#000000'
 font1 = ('Helvetica', 18)
 font2 = ('Helvetica', 16)
+width = 800
+height = 450
+default_source = 'Solo'
+default_destination = 'Jakarta'
+default_date = datetime.today().strftime('%Y-%m-%d')
 
 
 def full_path(path):
@@ -22,11 +29,19 @@ def full_path(path):
 def read_csv(path):
     return pd.read_csv(full_path(path))
 
+
 booking_df = read_csv('data/booking.csv')
 location_df = read_csv('data/location.csv')
 route_df = read_csv('data/route.csv')
 schedule_df = read_csv('data/schedule.csv')
 vehicle_df = read_csv('data/vehicle.csv')
+order_df = read_csv('data/order.csv')
+
+
+def set_screen(screen_width, screen_height):
+    global width, height
+    width = screen_width
+    height = screen_height
 
 
 def default_result_frame(frame, message):
@@ -76,10 +91,10 @@ def df_val(df, col):
 
 def write_append(path, df, values):
     last_id = len(df.index)
-    values[0] = last_id+1
+    values[0] = last_id + 1
     df.loc[last_id] = values
     df.to_csv(full_path(path), mode='w', index=False, header=True)
-    return last_id+1
+    return last_id + 1
 
 
 def write_update(path, df, index, col, value):
@@ -90,3 +105,7 @@ def write_update(path, df, index, col, value):
 def delete_pages(parent):
     for frame in parent.winfo_children():
         frame.destroy()
+
+
+def popup_showinfo(title, message):
+    showinfo(title, message)

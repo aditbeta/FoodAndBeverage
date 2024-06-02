@@ -1,24 +1,22 @@
 import tkinter as tk
-
-import pandas as pd
+from datetime import datetime
+import constant as c
 
 from constant import default_result_frame, default_tree, \
     booking_df, schedule_df, route_df, vehicle_df, location_df, df_by_id, \
-    df_by_col, read_csv
-
-from datetime import datetime
-
-order_df = read_csv('data/order.csv')
+    df_by_col, order_df
+from payment import Payment
 
 
 class Order(tk.Frame):
     def __init__(self, parent, user_id):
         super().__init__(parent)
+        self.tree = None
         self.user_id = user_id
-        self.order_frame = tk.Frame(self, width=1400, height=800)
+        self.order_frame = tk.Frame(self, width=c.width * 7/8, height=c.height * 8/9)
         self.pack(side=tk.RIGHT)
         self.pack_propagate(False)
-        self.configure(width=1400, height=900)
+        self.configure(width=c.width * 7/8, height=c.height)
 
         self.create_tree_result()
 
@@ -37,8 +35,11 @@ class Order(tk.Frame):
             return
 
         # Add a Treeview widget
+        hidden_columns = ("Order ID", "Booking ID")
         columns = ("Source", "Destination", "Date", "Vehicle", "Status")
-        tree = default_tree(self.order_frame, columns)
+        tree = default_tree(self.order_frame, columns + hidden_columns)
+        tree["displaycolumns"] = columns
+        tree.bind('<ButtonRelease-1>', self.payment)
 
         for i, order in orders.iterrows():
             booking = df_by_id(booking_df, order['booking_id'])
@@ -60,7 +61,20 @@ class Order(tk.Frame):
             if not order['is_paid']:
                 status = 'Expired' if is_passed else 'Awaiting Payment'
 
-            tree.insert('', 'end', values=(
-                source, destination, date, vehicle, status))
+            tree.insert('', 'end', values=(source, destination, date, vehicle,
+                                           status,
+                                           order['id'], order['booking_id']))
 
         tree.pack(fill='x')
+        self.tree = tree
+
+    def payment(self, event):
+        selected = self.tree.item(self.tree.focus())
+
+        col = self.tree.identify_column(event.x)
+
+        if col != '#5':
+            return
+
+        self.destroy()
+        return Payment(self.master, selected['values'][-2], selected['values'][-1], 'virtual_account')

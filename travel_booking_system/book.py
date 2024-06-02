@@ -1,13 +1,15 @@
 import locale
 import tkinter as tk
+import constant as c
 
 from tkcalendar import DateEntry
 
 from constant import white, font2, red, blue, black, \
     default_result_frame, default_tree, booking_df, schedule_df, route_df, \
     location_df, vehicle_df, df_by_col, green, df_val, yellow, write_append, \
-    write_update
+    write_update, popup_showinfo
 from order import order_df
+from payment import Payment
 
 
 class Book(tk.Frame):
@@ -21,11 +23,11 @@ class Book(tk.Frame):
         self.destination = destination
         self.source = source
         self.tree = None
-        self.result_frame = tk.Frame(self, width=1400, height=800)
+        self.result_frame = tk.Frame(self, width=c.width * 7/8, height=c.height * 8/9)
         self.sources, self.destinations = self.read_locations()
         self.pack(side=tk.RIGHT)
         self.pack_propagate(False)
-        self.configure(width=1400, height=900)
+        self.configure(width=c.width * 7/8, height=c.height)
 
         self.create_search_frame(source, destination, date, book, schedule,
                                  booking, vehicle)
@@ -37,7 +39,7 @@ class Book(tk.Frame):
         self.columnconfigure((0, 1, 2, 3, 4, 5, 6, 7), weight=1, uniform='a')
         self.pack_propagate(False)
 
-        search_frame = tk.Frame(self, width=1400, height=100,
+        search_frame = tk.Frame(self, width=c.width * 7/8, height=c.height * 1/9,
                                 background=red, padx=20, pady=20)
         search_frame.pack(side=tk.TOP, fill='x')
 
@@ -125,7 +127,7 @@ class Book(tk.Frame):
         book_button = tk.Button(self.result_frame, text='Book',
                                 font=font2, border=0, height=1,
                                 background=blue, foreground=white,
-                                command=lambda: book())
+                                command=lambda: book_seat())
         book_button.pack(side=tk.TOP, fill='x')
         selected_label = tk.Label(self.result_frame, text='Selected seat: ')
         selected_label.pack(side=tk.TOP, fill='x')
@@ -184,23 +186,25 @@ class Book(tk.Frame):
                 button["bg"] = yellow
                 button["fg"] = black
 
-        def book():
+        def book_seat():
             selected_seat = ";".join(selected)
 
             if not booking.empty:
                 booking_id = df_val(booking, 'id')
                 updated_booked_seat = ';'.join(booked_seat + selected)
-                write_update('data/booking.csv', booking_df, booking_id-1,
+                write_update('data/booking.csv', booking_df, booking_id - 1,
                              'seat', updated_booked_seat)
             else:
                 booking_id = write_append(
                         'data/booking.csv', booking_df,
                         [0, schedule['id'], self.date, selected_seat])
 
-            write_append('data/order.csv', order_df,
-                         [0, self.user_id, booking_id, selected_seat, False])
+            order_id = write_append('data/order.csv', order_df,
+                                    [0, int(self.user_id), booking_id,
+                                     selected_seat, False])
 
-            return self.reload()
+            self.destroy()
+            return Payment(self.master, order_id, booking_id, 'virtual_account')
 
     def book_route(self, event):
         selected = self.tree.item(self.tree.focus())
@@ -210,8 +214,11 @@ class Book(tk.Frame):
         if col != '#6':
             return
 
-        return self.reload(True, self.df_dict[selected['values'][-1]][0],
-                           self.df_dict[selected['values'][-1]][1])
+        if self.user_id == None or self.user_id <= 0:
+            popup_showinfo('Please Login', 'You are not logged in,\nPlease login first to book your ticket.')
+        else:
+            return self.reload(True, self.df_dict[selected['values'][-1]][0],
+                               self.df_dict[selected['values'][-1]][1])
 
     @staticmethod
     def read_locations():
@@ -284,5 +291,6 @@ class Book(tk.Frame):
 
     def reload(self, book=False, schedule=None, booking=None):
         self.destroy()
-        return Book(self.master, self.user_id, self.source, self.destination, self.date,
+        return Book(self.master, self.user_id, self.source, self.destination,
+                    self.date,
                     book, schedule, booking)

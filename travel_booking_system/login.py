@@ -1,10 +1,9 @@
 import tkinter as tk
-from tkinter.messagebox import showinfo
-import pandas as pd
+import constant as c
 
 from book import Book
 from constant import write_append, font1, df_by_col, \
-    delete_pages, read_csv
+    delete_pages, read_csv, popup_showinfo, default_source, default_destination, default_date
 
 email_header = 'email'
 phone_header = 'phone'
@@ -12,27 +11,25 @@ password_header = 'password'
 
 user_df = read_csv('data/user.csv')
 user_id = -1
+logged_email = ''
 
 
 class Login(tk.Frame):
     def __init__(self, parent):
         super().__init__(parent)
+        self.main_frame = parent
         self.pack()
         self.pack_propagate(False)
-        self.configure(width=1400, height=900)
+        self.configure(width=c.width, height=c.height)
 
-        self.create_layout()
-
-    def create_layout(self):
-        # create grid
         configure_layout(self, False)
 
     def login(self, email, password):
         if ((user_df[email_header] == email) & (
                 user_df[password_header] == password)).any():
-            popup_showinfo("Login Success", "Welcome, " + email)
-            delete_pages(self)
-            Book(self, get_user_id(email))
+            global logged_email
+            logged_email = email
+            redirect_to_book_page(self, 'Login Success\nWelcome, ')
         else:
             popup_showinfo("Login", "Login failed")
 
@@ -46,12 +43,8 @@ class Register(tk.Frame):
         super().__init__(parent)
         self.pack()
         self.pack_propagate(False)
-        self.configure(width=1400, height=900)
+        self.configure(width=c.width, height=c.height)
 
-        self.create_layout()
-
-    def create_layout(self):
-        # create grid
         configure_layout(self, True)
 
     def register_user(self, email, phone, password):
@@ -66,6 +59,9 @@ class Register(tk.Frame):
 
 
 def configure_layout(self, is_register):
+    if user_id > 0:
+        redirect_to_book_page(self, 'You are logged in as ')
+
     self.rowconfigure((0, 1, 2, 3), weight=1, uniform='a')
     self.columnconfigure((0, 1, 2), weight=1, uniform='a')
 
@@ -113,11 +109,13 @@ def configure_layout(self, is_register):
         register_button.grid(row=4, column=0, columnspan=3, sticky='news')
 
 
-def popup_showinfo(title, message):
-    showinfo(title, message)
-
-
 def get_user_id(email):
     global user_id
     user_id = df_by_col(user_df, email_header, email)['id']
     return user_id
+
+
+def redirect_to_book_page(self, message):
+    popup_showinfo('Welcome to Travel Booking System', message + logged_email)
+    delete_pages(self.main_frame)
+    Book(self.main_frame, get_user_id(logged_email), default_source, default_destination, default_date)
